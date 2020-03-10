@@ -12,13 +12,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         wv_home.webViewClient = WebViewClient() // wv_home.setWbViewClinet(new WebViewClient())
-        wv_home.loadUrl("https://www.google.com")
+        wv_home.loadUrl("https://www.google.com")   // url request
     }
 
     override fun onBackPressed() {
 
         if (wv_home.canGoBack()) {
-            wv_home.goBack()
+            wv_home.goBack() // Goback di webview, kalau bukan berada pada page pertama webview
         } else
             super.onBackPressed()
 
