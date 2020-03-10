@@ -1,10 +1,14 @@
 package id.co.editya.simplewebview
 
 import android.os.Bundle
+import android.os.Handler
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -12,11 +16,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        wv_home.webViewClient = WebViewClient() //  webclient default
-//        (java->) wv_home.setWebViewClient(new WebViewClient())
+        val webSettings: WebSettings = wv_home.settings
+        webSettings.javaScriptEnabled = true
+        webSettings.domStorageEnabled = true
+        webSettings.loadWithOverviewMode = true
+        webSettings.useWideViewPort = true
+        webSettings.builtInZoomControls = true
+        webSettings.displayZoomControls = false
+        webSettings.setSupportZoom(true)
+        webSettings.defaultTextEncodingName = "utf-8"
+        webSettings.pluginState = WebSettings.PluginState.ON
 
-        wv_home.webViewClient = CustomWeViewClient()  //  custom webviewclient
-        wv_home.loadUrl("https://www.google.com")   //  url request
+        wv_home.webViewClient = CustomWeViewClient()  //  set custom webviewclient
+        //        (java->) wv_home.setWebViewClient(new WebViewClient())
+
+        wv_home.webChromeClient = WebChromeClient()  // set default WebChromeClient
+
+        wv_home.loadUrl("http://156.67.220.101:8099/user-login")   //  url request
     }
 
     override fun onBackPressed() {
@@ -27,18 +43,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class CustomWeViewClient : WebViewClient() {
-        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {  // ketika hyperlink pada web di klik, tidak akan mengarah ke browser lain
+        override fun shouldOverrideUrlLoading(
+            view: WebView?,
+            url: String?
+        ): Boolean {  // ketika hyperlink pada web di klik, tidak akan mengarah ke browser lain
             view!!.loadUrl(url)
             return true
+        }
+
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+            Handler().postDelayed({
+                //update your view with js here
+                super.onPageFinished(view, url)
+            }, 1000)
         }
     }
 
     /* (java->)
     class CustomWeViewClient extend WebViewClient {
-          @Override
-          public boolean shouldOverrideUrlLoading(WebView view, String : url){
-              view.loadUrl(url)
-              return true
-          }
-     */
+      @Override
+      public boolean shouldOverrideUrlLoading(WebView view, String : url){
+          view.loadUrl(url)
+          return true
+      }
+    */
 }
+
+
+
