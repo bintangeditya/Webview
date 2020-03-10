@@ -1,11 +1,9 @@
 package id.co.editya.simplewebview
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.webkit.WebChromeClient
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -27,12 +25,18 @@ class MainActivity : AppCompatActivity() {
         webSettings.defaultTextEncodingName = "utf-8"
         webSettings.pluginState = WebSettings.PluginState.ON
 
+
+
         wv_home.webViewClient = CustomWeViewClient()  //  set custom webviewclient
         //        (java->) wv_home.setWebViewClient(new WebViewClient())
 
         wv_home.webChromeClient = WebChromeClient()  // set default WebChromeClient
 
         wv_home.loadUrl("http://156.67.220.101:8099/user-login")   //  url request
+//        wv_home.loadUrl("https://google.com")   //  url request
+
+        CookieManager.getInstance().setAcceptCookie(true)
+
     }
 
     override fun onBackPressed() {
@@ -46,8 +50,12 @@ class MainActivity : AppCompatActivity() {
         override fun shouldOverrideUrlLoading(
             view: WebView?,
             url: String?
-        ): Boolean {  // ketika hyperlink pada web di klik, tidak akan mengarah ke browser lain
-            view!!.loadUrl(url)
+        ): Boolean {
+            if (Uri.parse(url).host!!.endsWith("<client url>")) {
+                return false
+            }
+
+            view!!.loadUrl(url)  // ketika hyperlink pada web di klik, tidak akan mengarah ke browser lain
             return true
         }
 
